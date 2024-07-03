@@ -44,7 +44,7 @@ class GameManager: ObservableObject {
     func playNote() {
         
         /* Disable tracking while we're playing the note */
-        self.tracker.stop()
+        self.listenEngine.stop()
         
         DispatchQueue.global(qos: .userInitiated).async {
             
@@ -56,7 +56,7 @@ class GameManager: ObservableObject {
             }
             sleep(1)
 
-            self.tracker.start()
+            try! self.listenEngine.start()
         }
         
     }
@@ -122,9 +122,11 @@ class GameManager: ObservableObject {
                 self.update(pitch[0], amp[0])
             }
         }
+        
+        tracker.start()
 
         sequencer = SequencerTrack(targetNode: midiCallback)
-        sequencer.length = 2
+        sequencer.length = 2.01
         sequencer.loopEnabled = false
 
         newRound()
