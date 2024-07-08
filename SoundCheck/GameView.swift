@@ -15,6 +15,7 @@ struct GameData {
     var noteName = ""
     var targetNote: MIDINoteNumber = 0
     var wrongNotes = 0
+    var roundComplete = false
 }
 
 
@@ -62,8 +63,11 @@ class GameManager: ObservableObject {
     }
     
     func newRound() {
+        let originalNote = data.targetNote
         
-        data.targetNote = MIDINoteNumber.random(in: 40...76)
+        while(data.targetNote == originalNote) {
+            data.targetNote = MIDINoteNumber.random(in: 40...76)
+        }
         
         /* Re-set the sequencer */
         sequencer.clear()
@@ -155,7 +159,7 @@ class GameManager: ObservableObject {
             data.higherOrLower = ""
             data.wrongNotes = 0
             data.noteName = ""
-            newRound()
+            data.roundComplete = true
             return
         }
         
@@ -229,6 +233,11 @@ struct GameView: View {
         .onDisappear {
             manager.TalkEngine.stop()
             manager.listenEngine.stop()
+        }
+        .alert("You played a \(manager.data.targetNote.toNote())", isPresented: $manager.data.roundComplete) {
+            Button("Next Round", role: .cancel) {
+                manager.newRound()
+            }
         }
     }
 }
