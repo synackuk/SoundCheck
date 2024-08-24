@@ -1,2 +1,2 @@
 # SoundCheck
-An ear training app. If I make it not suck, I might release this one day...
+An ear training app.
